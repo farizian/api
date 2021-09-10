@@ -9,7 +9,7 @@ productRouter
   .get('/product', productController.getList)
   .get('/product/:id', authen, productController.getDetails)
   .post('/product', authen, author.isAdmin, upload, productController.insert)
-  .put('/product/:id', authen, author.isAdmin, upload, productController.update)
-  .delete('/product/:id', authen, author.isAdmin, upload, productController.delete);
+  .put('/product/:id', upload, productController.update)
+  .delete('/product/:id', authen, author.isAdmin, productController.delete);
 
 module.exports = productRouter;

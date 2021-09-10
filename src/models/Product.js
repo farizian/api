@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const db = require('../config/db');
 
 const productModel = {
@@ -54,12 +56,21 @@ const productModel = {
       },
     );
   }),
-  update: (body, id, filename) => new Promise((resolve, reject) => {
+  update: (body, id, filename, filelama) => new Promise((resolve, reject) => {
     db.query(`update product set picture='${filename}',product_name='${body.product_name}',price='${body.price}',categoryID='${body.category}',
     ket='${body.ket}' where id_product='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
+        const pathtest = path.join(__dirname, `../uploads/${filelama}`);
+        fs.unlink(pathtest, (error) => {
+          if (error) {
+            console.log(error);
+            reject(error);
+          }
+
+          // file removed
+        });
         resolve(result);
       }
     });

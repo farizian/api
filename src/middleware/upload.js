@@ -1,6 +1,6 @@
 const multer = require('multer');
 const path = require('path');
-
+const { failed } = require('../helpers/respon');
 // konfigurasi multer
 const multerUpload = multer({
   storage: multer.diskStorage({
@@ -23,7 +23,7 @@ const multerUpload = multer({
       cb(error, false);
     }
   },
-  limits: { fileSize: 80 * 1000 * 1000 },
+  limits: { fileSize: 1 * 1000 * 1000 * 1000 },
 });
 
 // middleware
@@ -31,7 +31,7 @@ const upload = (req, res, next) => {
   const multerSingle = multerUpload.single('image');
   multerSingle(req, res, (err) => {
     if (err) {
-      res.json(err);
+      failed(res, 401, err);
     } else {
       next();
     }

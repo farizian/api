@@ -72,6 +72,16 @@ const usersModel = {
         }
       });
   }),
+  cekUsernamedanemail: (body) => new Promise((resolve, reject) => {
+    db.query(`select * from users where username='${body.username}' && email_address='${body.email_address}'`,
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+  }),
   update: (body, id, hashpassword, filename) => new Promise((resolve, reject) => {
     db.query(
       `update users set  username='${body.username}',password='${hashpassword}',picture='${filename}',

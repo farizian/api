@@ -10,24 +10,34 @@ const users = {
   register: (req, res) => {
     try {
       const { body } = req;
-      bcrypt.hash(body.password, 10, (err, hash) => {
-        // Store hash in your password DB.
-        if (err) {
-          failed(res, 401, err);
+      usersModel.cekUsernamedanemail(body).then((result) => {
+        if (result) {
+          failed(res, 100, 'username sudah ada');
+          console.log('ada');
         } else {
-          usersModel.register(body, hash).then((result) => {
-            const user = result;
-            const payload = {
-              id: user.insertId,
-            };
-            const token = {
-              token: jwt.sign(payload, JWT_SECRET),
-            };
-            success(res, token);
-          }).catch((err1) => {
-            failed(res, 401, err1);
+          bcrypt.hash(body.password, 10, (err, hash) => {
+            // Store hash in your password DB.
+            if (err) {
+              failed(res, 401, err);
+            } else {
+              usersModel.register(body, hash).then((result2) => {
+                const user = result2;
+                const payload = {
+                  id: user.insertId,
+                };
+                const output = {
+                  user,
+                  token: jwt.sign(payload, JWT_SECRET),
+                };
+                success(res, output, 'succes');
+              }).catch((err1) => {
+                failed(res, 401, err1);
+              });
+            }
           });
         }
+      }).catch((err) => {
+        failed(res, 401, err);
       });
     } catch (error) {
       failed(res, 401, error);
@@ -49,10 +59,11 @@ const users = {
               const payload = {
                 id: user.id,
               };
-              const token = {
+              const output = {
+                user,
                 token: jwt.sign(payload, JWT_SECRET),
               };
-              success(res, token);
+              success(res, output, 'succes');
             } else {
               failed(res, 401, 'Wrong Password');
             }
@@ -95,6 +106,8 @@ const users = {
             redisAction.set('users', JSON.stringify(allData), (error) => {
               if (error) {
                 failed(res, 401, error);
+              } else {
+                success(res, null, 'redis set succes');
               }
             });
             success(res, output, 'succes');

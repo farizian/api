@@ -67,6 +67,18 @@ const transaction = {
       failed(res, 401, error);
     }
   },
+  getTransaction: (req, res) => {
+    try {
+      const id = req.userId;
+      transactionModel.getTransaction(id).then((result) => {
+        success(res, result, 'succes');
+      }).catch((err) => {
+        failed(res, 500, err);
+      });
+    } catch (error) {
+      failed(res, 401, error);
+    }
+  },
   insert: (req, res) => {
     try {
       const { body } = req;

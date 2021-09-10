@@ -38,7 +38,16 @@ const productModel = {
     );
   }),
   getDetails: (id) => new Promise((resolve, reject) => {
-    db.query(`select * from details_transaction where id='${id}'`, (err, result) => {
+    db.query(`select * from details_transaction where id_masterTransaction='${id}'`, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
+  }),
+  getTransaction: (id) => new Promise((resolve, reject) => {
+    db.query(`select * from transaction where id_user='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {

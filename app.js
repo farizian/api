@@ -19,3 +19,5 @@ app.use(express.static(`${__dirname}/uploads`));
 app.listen(8000, () => {
   console.log('service running on port 8000');
 });
+
+module.exports = app;
