@@ -91,11 +91,7 @@ const product = {
       const { body } = req;
       const { filename } = req.file;
       productModel.getDetails(id).then((resultDetail) => {
-        const filelama = resultDetail.map((e) => e.picture);
-        // eslint-disable-next-line radix
-        const test = parseInt(filelama);
-        console.log(test);
-        productModel.update(body, id, filename, test).then((result) => {
+        productModel.update(body, id, filename, resultDetail).then((result) => {
           redisAction.del('product', (err) => {
             if (err) {
               failed(res, 401, err);
@@ -113,15 +109,17 @@ const product = {
   delete: (req, res) => {
     try {
       const { id } = req.params;
-      productModel.delete(id).then((result) => {
-        redisAction.del('product', (err) => {
-          if (err) {
-            failed(res, 401, err);
-          }
+      productModel.getDetails(id).then((resultDetail) => {
+        productModel.delete(id, resultDetail).then((result) => {
+          redisAction.del('product', (err) => {
+            if (err) {
+              failed(res, 401, err);
+            }
+          });
+          success(res, result, 'succes');
+        }).catch((err) => {
+          failed(res, 500, err);
         });
-        success(res, result, 'succes');
-      }).catch((err) => {
-        failed(res, 500, err);
       });
     } catch (error) {
       failed(res, 401, error);

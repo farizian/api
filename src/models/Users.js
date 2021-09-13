@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const db = require('../config/db');
 
 const usersModel = {
@@ -72,8 +74,8 @@ const usersModel = {
         }
       });
   }),
-  cekUsernamedanemail: (body) => new Promise((resolve, reject) => {
-    db.query(`select * from users where username='${body.username}' && email_address='${body.email_address}'`,
+  cekUsernameRegis: (body) => new Promise((resolve, reject) => {
+    db.query(`select * from users where username='${body.username}'`,
       (err, result) => {
         if (err) {
           reject(err);
@@ -82,7 +84,18 @@ const usersModel = {
         }
       });
   }),
-  update: (body, id, hashpassword, filename) => new Promise((resolve, reject) => {
+  cekEmail: (body) => new Promise((resolve, reject) => {
+    db.query(`select * from users where email_address='${body.email_address}'`,
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+  }),
+  update: (body, id, hashpassword, filename, resultDetail) => new Promise((resolve, reject) => {
+    const filelama = resultDetail.map((e) => e.picture);
     db.query(
       `update users set  username='${body.username}',password='${hashpassword}',picture='${filename}',
       display_name='${body.display_name}',first_name='${body.first_name}',last_name='${body.last_name}',
@@ -91,16 +104,31 @@ const usersModel = {
         if (err) {
           reject(err);
         } else {
+          const pathfile = path.join(__dirname, `../../uploads/${filelama}`);
+          fs.unlink(pathfile, (error) => {
+            if (error) {
+              console.log(error);
+              reject(error);
+            }
+          });
           resolve(result);
         }
       },
     );
   }),
-  delete: (id) => new Promise((resolve, reject) => {
+  delete: (id, resultDetail) => new Promise((resolve, reject) => {
+    const filelama = resultDetail.map((e) => e.picture);
     db.query(`delete from users where id='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
+        const pathfile = path.join(__dirname, `../../uploads/${filelama}`);
+        fs.unlink(pathfile, (error) => {
+          if (error) {
+            console.log(error);
+            reject(error);
+          }
+        });
         resolve(result);
       }
     });

@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-const productModel = {
+const transactionModel = {
   getAll: () => new Promise((resolve, reject) => {
     db.query(
       `select dt.id,id_user,u.display_name,alamat,payment,shipping,subtotal,tax,total,
@@ -65,20 +65,26 @@ const productModel = {
         const data = result;
         const { details } = body;
         // eslint-disable-next-line array-callback-return
-        details.map((e) => {
+        const insertDetails = details.map((e) => {
           db.query(`INSERT INTO details_transaction (id_masterTransaction,id_product,price,qty) 
             VALUE ('${data.insertId}','${e.id_product}',
-            '${e.price}','${e.qty}')`, (err2, result2) => {
-            if (err) {
-              reject(err2);
+            '${e.price}','${e.qty}')`, (error) => {
+            if (error) {
+              reject(error);
             } else {
-              resolve(result2);
+              // eslint-disable-next-line no-useless-return
+              return;
             }
           });
+        });
+        Promise.all(insertDetails).then(() => {
+          resolve(result);
+        }).catch((err2) => {
+          reject(err2);
         });
       }
     });
   }),
 };
 
-module.exports = productModel;
+module.exports = transactionModel;

@@ -8,7 +8,7 @@ const authorization = {
       if (result[0].level === 0) {
         next();
       } else {
-        failed(res, 10, null);
+        failed(res, 10, 'hanya admin');
       }
     }).catch((err) => {
       failed(res, 500, err);

@@ -56,30 +56,37 @@ const productModel = {
       },
     );
   }),
-  update: (body, id, filename, filelama) => new Promise((resolve, reject) => {
+  update: (body, id, filename, resultDetail) => new Promise((resolve, reject) => {
+    const filelama = resultDetail.map((e) => e.picture);
     db.query(`update product set picture='${filename}',product_name='${body.product_name}',price='${body.price}',categoryID='${body.category}',
     ket='${body.ket}' where id_product='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
-        const pathtest = path.join(__dirname, `../uploads/${filelama}`);
-        fs.unlink(pathtest, (error) => {
+        const pathfile = path.join(__dirname, `../../uploads/${filelama}`);
+        fs.unlink(pathfile, (error) => {
           if (error) {
             console.log(error);
             reject(error);
           }
-
-          // file removed
         });
         resolve(result);
       }
     });
   }),
-  delete: (id) => new Promise((resolve, reject) => {
+  delete: (id, resultDetail) => new Promise((resolve, reject) => {
+    const filelama = resultDetail.map((e) => e.picture);
     db.query(`delete from product where id_product='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
+        const pathfile = path.join(__dirname, `../../uploads/${filelama}`);
+        fs.unlink(pathfile, (error) => {
+          if (error) {
+            console.log(error);
+            reject(error);
+          }
+        });
         resolve(result);
       }
     });

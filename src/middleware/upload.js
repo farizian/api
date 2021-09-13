@@ -23,7 +23,7 @@ const multerUpload = multer({
       cb(error, false);
     }
   },
-  limits: { fileSize: 1 * 1000 * 1000 * 1000 },
+  limits: { fileSize: 80 * 1000 * 1000 * 1000 },
 });
 
 // middleware

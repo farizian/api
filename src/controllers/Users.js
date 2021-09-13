@@ -10,28 +10,35 @@ const users = {
   register: (req, res) => {
     try {
       const { body } = req;
-      usersModel.cekUsernamedanemail(body).then((result) => {
-        if (result) {
+      usersModel.cekUsernameRegis(body).then((result) => {
+        if (!result.length <= 0) {
           failed(res, 100, 'username sudah ada');
           console.log('ada');
+          console.log(result);
         } else {
-          bcrypt.hash(body.password, 10, (err, hash) => {
-            // Store hash in your password DB.
-            if (err) {
-              failed(res, 401, err);
+          usersModel.cekEmail(body).then((resultemail) => {
+            if (!resultemail.length <= 0) {
+              failed(res, 100, 'email sudah ada');
             } else {
-              usersModel.register(body, hash).then((result2) => {
-                const user = result2;
-                const payload = {
-                  id: user.insertId,
-                };
-                const output = {
-                  user,
-                  token: jwt.sign(payload, JWT_SECRET),
-                };
-                success(res, output, 'succes');
-              }).catch((err1) => {
-                failed(res, 401, err1);
+              bcrypt.hash(body.password, 10, (err, hash) => {
+                // Store hash in your password DB.
+                if (err) {
+                  failed(res, 401, err);
+                } else {
+                  usersModel.register(body, hash).then((result2) => {
+                    const user = result2;
+                    const payload = {
+                      id: user.insertId,
+                    };
+                    const output = {
+                      user,
+                      token: jwt.sign(payload, JWT_SECRET),
+                    };
+                    success(res, output, 'succes');
+                  }).catch((err1) => {
+                    failed(res, 401, err1);
+                  });
+                }
               });
             }
           });
@@ -49,6 +56,7 @@ const users = {
       usersModel.cekUsername(body).then((result) => {
         if (result.length <= 0) {
           failed(res, 100, 'username salah');
+          console.log('salah');
         } else {
           const passwordHash = result[0].password;
           bcrypt.compare(body.password, passwordHash, (error, checkpassword) => {
@@ -166,7 +174,6 @@ const users = {
       failed(res, 401, error);
     }
   },
-
   update: (req, res) => {
     try {
       const { id } = req.params;
@@ -177,15 +184,17 @@ const users = {
         if (errb) {
           failed(res, 401, errb);
         } else {
-          usersModel.update(body, id, hash, filename).then((result) => {
-            redisAction.del('users', (error) => {
-              if (error) {
-                failed(res, 401, error);
-              }
+          usersModel.getDetails(id).then((resultDetail) => {
+            usersModel.update(body, id, hash, filename, resultDetail).then((result) => {
+              redisAction.del('users', (err) => {
+                if (err) {
+                  failed(res, 401, err);
+                }
+              });
+              success(res, result, 'succes');
+            }).catch((err) => {
+              failed(res, 500, err);
             });
-            success(res, result, 'succes');
-          }).catch((err) => {
-            failed(res, 500, err);
           });
         }
       });
@@ -196,15 +205,17 @@ const users = {
   delete: (req, res) => {
     try {
       const { id } = req.params;
-      usersModel.delete(id).then((result) => {
-        redisAction.del('users', (error) => {
-          if (error) {
-            failed(res, 401, error);
-          }
+      usersModel.getDetails(id).then((resultDetail) => {
+        usersModel.delete(id, resultDetail).then((result) => {
+          redisAction.del('users', (error) => {
+            if (error) {
+              failed(res, 401, error);
+            }
+          });
+          success(res, result, 'succes');
+        }).catch((err) => {
+          failed(res, 500, err);
         });
-        success(res, result, 'succes');
-      }).catch((err) => {
-        failed(res, 500, err);
       });
     } catch (error) {
       failed(res, 401, error);

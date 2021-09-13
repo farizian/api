@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-const productModel = {
+const categoryModel = {
   getAll: () => new Promise((resolve, reject) => {
     db.query('select * from category', (err, result) => {
       if (err) {
@@ -43,7 +43,7 @@ const productModel = {
     });
   }),
   update: (body, id) => new Promise((resolve, reject) => {
-    db.query(`update product set category='${body.category}' where id='${id}'`, (err, result) => {
+    db.query(`update category set category='${body.category}' where id='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
@@ -62,4 +62,4 @@ const productModel = {
   }),
 };
 
-module.exports = productModel;
+module.exports = categoryModel;

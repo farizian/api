@@ -6,7 +6,7 @@ const response = {
       code: 200,
       message,
     };
-    res.status(200).json(response1);
+    res.json(response1);
   },
   failed: (res, code, err) => {
     if (code === 500) {
@@ -16,7 +16,7 @@ const response = {
         code,
         message: `500 internal server error${err}`,
       };
-      res.status(500).json(response1);
+      res.status(401).json(response1);
     } else if (code === 401) {
       const response1 = {
         succes: false,
@@ -32,13 +32,13 @@ const response = {
         code,
         message: err,
       };
-      res.status(100).json(response1);
+      res.status(401).json(response1);
     } else if (code === 10) {
       const response1 = {
         succes: false,
         data: null,
         code,
-        message: 'hanya admin',
+        message: err,
       };
       res.status(401).json(response1);
     }
