@@ -52,9 +52,9 @@ const usersModel = {
   }),
   register: (body, pass) => new Promise((resolve, reject) => {
     db.query(
-      `INSERT INTO users (username,email_address,password,level)
+      `INSERT INTO users (username,email_address,password,phone_number,level)
         VALUE (
-          '${body.username}','${body.email_address}','${pass}','${body.level}'
+          '${body.username}','${body.email_address}','${pass}','${body.phone_number}','${body.level}'
         )`, (err, result) => {
         if (err) {
           reject(err);

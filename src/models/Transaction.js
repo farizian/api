@@ -38,10 +38,13 @@ const transactionModel = {
     );
   }),
   getDetails: (id) => new Promise((resolve, reject) => {
-    db.query(`select * from details_transaction where id_masterTransaction='${id}'`, (err, result) => {
+    db.query(`SELECT details_transaction.id,id_masterTransaction,picture,product_name,details_transaction.price,ket,category,qty
+    from details_transaction left join product on details_transaction.id_product=product.id_product left join category 
+    on product.categoryID=category.id where id_masterTransaction='${id}'`, (err, result) => {
       if (err) {
         reject(err);
       } else {
+        console.log(result);
         resolve(result);
       }
     });
@@ -56,8 +59,8 @@ const transactionModel = {
     });
   }),
   insert: (body) => new Promise((resolve, reject) => {
-    db.query(`INSERT INTO transaction (id_user,alamat,payment,shipping,subtotal,tax,total) 
-    VALUE ('${body.id_user}','${body.alamat}','${body.payment}','${body.shipping}','${body.subtotal}',
+    db.query(`INSERT INTO transaction (id_user,penerima,alamat,phone_number,payment,shipping,subtotal,tax,total) 
+    VALUE ('${body.id_user}','${body.penerima}','${body.alamat}','${body.phone_number}','${body.payment}','${body.shipping}','${body.subtotal}',
         '${body.tax}','${body.total}')`, (err, result) => {
       if (err) {
         reject(err);

@@ -59,7 +59,7 @@ const product = {
     try {
       const { id } = req.params;
       productModel.getDetails(id).then((result) => {
-        success(res, result, 'succes');
+        success(res, result[0], 'succes');
       }).catch((err) => {
         failed(res, 500, err);
       });

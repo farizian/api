@@ -37,7 +37,7 @@ describe('test endpoint category', () => {
   });
   it('test insert category', () => {
     const payload = {
-      category: 'testing',
+      category: 'melon',
     };
     getToken.admin().then((token) => {
       request(app)
@@ -60,7 +60,7 @@ describe('test endpoint category', () => {
     };
     getToken.admin().then((token) => {
       request(app)
-        .put('/category/15')
+        .put('/category/13')
         .set('token', token)
         .send(payload)
         .expect(200)
@@ -76,9 +76,132 @@ describe('test endpoint category', () => {
   it('test delete category', () => {
     getToken.admin().then((token) => {
       request(app)
-        .delete('/category/16')
+        .delete('/category/13')
         .set('token', token)
         .expect(200)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+
+  // error
+  it('test get category error', () => {
+    getToken.user().then((token) => {
+      request(app)
+        .get('/category')
+        .set('token', token)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test get category details error', () => {
+    getToken.user().then((token) => {
+      request(app)
+        .get('/category/1')
+        .set('token', token)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test insert category error', () => {
+    const payload = {
+      category: 'testing',
+    };
+    getToken.user().then((token) => {
+      request(app)
+        .post('/category')
+        .set('token', token)
+        .send(payload)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test insert category err', () => {
+    const payload = {
+      categoryid: 'testing',
+    };
+    getToken.user().then((token) => {
+      request(app)
+        .post('/category')
+        .set('token', token)
+        .send(payload)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test update category error', () => {
+    const payload = {
+      category: 'apple',
+    };
+    getToken.user().then((token) => {
+      request(app)
+        .put('/category/15')
+        .set('token', token)
+        .send(payload)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test update category err', () => {
+    const payload = {
+      categoryid: 'apple',
+    };
+    getToken.user().then((token) => {
+      request(app)
+        .put('/category/15')
+        .set('token', token)
+        .send(payload)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test delete category error', () => {
+    getToken.user().then((token) => {
+      request(app)
+        .delete('/category/16')
+        .set('token', token)
+        .expect(401)
         .expect('Content-Type', /json/)
         .then((response) => {
           expect(response.body).to.be.a('object');

@@ -56,7 +56,6 @@ const users = {
       usersModel.cekUsername(body).then((result) => {
         if (result.length <= 0) {
           failed(res, 100, 'username salah');
-          console.log('salah');
         } else {
           const passwordHash = result[0].password;
           bcrypt.compare(body.password, passwordHash, (error, checkpassword) => {
@@ -141,7 +140,7 @@ const users = {
     try {
       const { id } = req.params;
       usersModel.getDetails(id).then((result) => {
-        success(res, result, 'succes');
+        success(res, result[0], 'succes');
       }).catch((err) => {
         failed(res, 500, err);
       });

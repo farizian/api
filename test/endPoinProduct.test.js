@@ -44,7 +44,7 @@ describe('test endpoint product', () => {
             .post('/product')
             .set('token', token)
             .attach('image', filePath)
-            .field('product_name', 'apel')
+            .field('product_name', 'melon')
             .field('price', '20000')
             .field('category', '1')
             .field('ket', 'testing')
@@ -68,10 +68,10 @@ describe('test endpoint product', () => {
       } else {
         getToken.admin().then((token) => {
           request(app)
-            .put('/product/50')
+            .put('/product/24')
             .set('token', token)
             .attach('image', filePath)
-            .field('product_name', 'testing')
+            .field('product_name', 'semur')
             .field('price', '1000')
             .field('category', '1')
             .field('ket', 'testing')
@@ -90,7 +90,7 @@ describe('test endpoint product', () => {
   it('test delete product', () => {
     getToken.admin().then((token) => {
       request(app)
-        .delete('/product/51')
+        .delete('/product/20')
         .set('token', token)
         .expect(200)
         .expect('Content-Type', /json/)
@@ -100,6 +100,130 @@ describe('test endpoint product', () => {
         .catch((err) => {
           console.log(err);
         });
+    });
+  });
+  // err
+  it('test insert product err', () => {
+    const filePath = `${__dirname}/helpers/images/images.jpg`;
+    fs.exists(filePath, (exists) => {
+      if (!exists) {
+        console.log('file not found');
+      } else {
+        getToken.user().then((token) => {
+          request(app)
+            .post('/product')
+            .set('token', token)
+            .attach('image', filePath)
+            .field('product_name', 'melon')
+            .field('price', '20000')
+            .field('categoryid', '1')
+            .field('ket', 'testing')
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .then((response) => {
+              expect(response.body).to.be.a('object');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      }
+    });
+  });
+  it('test update err', () => {
+    const filePath = `${__dirname}/helpers/images/images.jpg`;
+    fs.exists(filePath, (exists) => {
+      if (!exists) {
+        console.log('file not found');
+      } else {
+        getToken.user().then((token) => {
+          request(app)
+            .put('/product/24')
+            .set('token', token)
+            .attach('image', filePath)
+            .field('product_name', 'nasi uduk ')
+            .field('price', '1000')
+            .field('categoryid', '1')
+            .field('ket', 'testing')
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .then((response) => {
+              expect(response.body).to.be.a('object');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      }
+    });
+  });
+  it('test delete product err', () => {
+    getToken.user().then((token) => {
+      request(app)
+        .delete('/product/28')
+        .set('token', token)
+        .expect(401)
+        .expect('Content-Type', /json/)
+        .then((response) => {
+          expect(response.body).to.be.a('object');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  });
+  it('test insert product err', () => {
+    const filePath = `${__dirname}/helpers/images/images.jpg`;
+    fs.exists(filePath, (exists) => {
+      if (!exists) {
+        console.log('file not found');
+      } else {
+        getToken.admin().then((token) => {
+          request(app)
+            .post('/product')
+            .set('token', token)
+            .attach('image', filePath)
+            .field('product_name', 'apel')
+            .field('price', '20000')
+            .field('categoryid', '1')
+            .field('ket', 'testing')
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .then((response) => {
+              expect(response.body).to.be.a('object');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      }
+    });
+  });
+  it('test update err', () => {
+    const filePath = `${__dirname}/helpers/images/images.jpg`;
+    fs.exists(filePath, (exists) => {
+      if (!exists) {
+        console.log('file not found');
+      } else {
+        getToken.admin().then((token) => {
+          request(app)
+            .put('/product/20')
+            .set('token', token)
+            .attach('image', filePath)
+            .field('product_namee', 'teasstsasdding')
+            .field('price', '1000')
+            .field('categoryid', '1')
+            .field('ket', 'testing')
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .then((response) => {
+              expect(response.body).to.be.a('object');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      }
     });
   });
 });
